@@ -8,13 +8,13 @@ public interface Personnage
      * Méthode qui donne la position du personnage en x
      * @return posX
      */
-    public int getPosX();
+    public int getColonne();
 
     /**
      * Méthode qui donne la position du personnage en y
      * @return posY
      */
-    public int getPosY();
+    public int getLigne();
 
     public String getNom();
 
@@ -34,7 +34,7 @@ public interface Personnage
 
     public int getPointAction();
 
-    public boolean deplacer();
+    public boolean deplacer(int ligne, int colonne);
 
     /**
      * retourne le nom associé à l'image qui sera affichée

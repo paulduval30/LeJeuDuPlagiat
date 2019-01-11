@@ -31,7 +31,9 @@ public interface Map
 
     public int getCase(int ligne, int colonne);
 
-    public int setCase(int ligne, int colonne, Valeur v);
+    public int getOldCase(int ligne, int colonne);
+
+    public int setCase(int ligne, int colonne, int v);
 
     public int[][] getGrille();
 
