@@ -59,10 +59,14 @@ public class StdMap implements Map
         return this.grillePersonnage[ligne][colonne];
     }
 
+    public int getOldCase(int ligne, int colonne){
+        return this.grille[ligne][colonne];
+    }
+
     @Override
-    public int setCase(int ligne, int colonne, Valeur v)
+    public int setCase(int ligne, int colonne, int v)
     {
-        return this.grillePersonnage[ligne][colonne] = v.getValue();
+        return this.grillePersonnage[ligne][colonne] = v;
     }
 
     @Override
