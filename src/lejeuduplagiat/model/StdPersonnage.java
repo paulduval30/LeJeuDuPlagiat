@@ -21,10 +21,14 @@ public class StdPersonnage implements Personnage {
     private List lSort;
     private Map map;
 
+    int id;
+
     public StdPersonnage(Map map){
         this.map = map;
-        this.ligne = 0;
-        this.colonne = 0;
+        this.ligne = map.getGrillePersonnage()[1][1] == Valeur.caseVide.getValue() ? 1 :
+                map.getGrillePersonnage().length - 1;
+        this.colonne = map.getGrillePersonnage()[1][1] == Valeur.caseVide.getValue() ? 1 :
+                map.getGrillePersonnage()[0].length - 1;;
         this.nom = "Sans nom";
         this.vie = 20;
         this.force = 3;
@@ -92,6 +96,18 @@ public class StdPersonnage implements Personnage {
     @Override
     public int getPointAction() {
         return this.ptsAction;
+    }
+
+    @Override
+    public int getId()
+    {
+        return this.id;
+    }
+
+    @Override
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     @Override

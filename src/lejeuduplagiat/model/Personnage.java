@@ -34,6 +34,10 @@ public interface Personnage
 
     public int getPointAction();
 
+    public int getId();
+
+    public void setId(int id);
+
     public boolean deplacer(int ligne, int colonne);
 
     /**

@@ -17,4 +17,5 @@ public enum Valeur
     public int getValue(){
         return this.value;
     }
+
 }
