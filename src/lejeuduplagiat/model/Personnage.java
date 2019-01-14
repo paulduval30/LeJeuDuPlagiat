@@ -49,4 +49,8 @@ public interface Personnage
     public List<Equipement> getEquipements();
 
     public List<Sort> getSorts();
+
+    boolean canWalk(int ligne, int colonne);
+
+    public void endTurn();
 }

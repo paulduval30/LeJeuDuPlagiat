@@ -39,5 +39,7 @@ public interface Map
 
     public int[][] getGrillePersonnage();
 
+    public int[][] genererMatrice();
+
 
 }

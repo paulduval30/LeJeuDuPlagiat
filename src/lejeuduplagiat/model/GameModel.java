@@ -1,5 +1,6 @@
 package lejeuduplagiat.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameModel implements Game
@@ -11,10 +12,10 @@ public class GameModel implements Game
     public GameModel()
     {
         int[][] mapModel = new int[][]{
-                {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+                {1,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
                 {2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
-                {2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
-                {2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                 {2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                 {2,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2},
                 {2,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2},
@@ -32,7 +33,9 @@ public class GameModel implements Game
                 {2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                 {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2}};
         this.map = new StdMap(mapModel);
-        this.current = 0;
+//       this.map = new StdMap(20,20);
+       this.current = 0;
+       this.personnages = new ArrayList<>();
     }
 
     @Override
@@ -65,6 +68,7 @@ public class GameModel implements Game
         if(p == null)
             return;
         this.personnages.add(p);
+        this.map.setCase(p.getLigne(), p.getColonne(),p.getId());
     }
 
     @Override
@@ -73,6 +77,24 @@ public class GameModel implements Game
         this.current ++;
         if(current >= this.personnages.size())
             current = 0;
+    }
+
+    @Override
+    public Personnage getJ1()
+    {
+        return null;
+    }
+
+    @Override
+    public Personnage getJ2()
+    {
+        return null;
+    }
+
+    @Override
+    public Personnage getCurrent()
+    {
+        return this.personnages.get(current);
     }
 
 

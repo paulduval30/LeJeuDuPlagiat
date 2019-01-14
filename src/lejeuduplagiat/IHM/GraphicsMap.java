@@ -10,12 +10,15 @@ public class GraphicsMap extends JComponent
 {
     private GameModel model;
     private Dimension dim;
+    private int mouseLigne;
+    private int mouseCol;
 
     public GraphicsMap(GameModel model, Dimension dim){
         this.model = model;
         this.dim = dim;
         this.setPreferredSize(dim);
         System.out.println(this.getHeight() + "  " + this.getWidth());
+
     }
 
     @Override
@@ -30,35 +33,29 @@ public class GraphicsMap extends JComponent
         int[][] grille = this.model.getMap().getGrillePersonnage();
 
         int tailleCase = (int) (grille.length >= grille[0].length ?
-                        this.getHeight() / grille.length :
-                        this.getWidth() / grille[0].length);
-        int diagonal = (int) ( Math.sqrt(tailleCase * tailleCase + tailleCase * tailleCase) * (0.7));
-        /*for(int i = 0; i < grille.length; i++)
-        {
-            for(int j = 0; j < grille[0].length; j++)
-            {
-                if(grille[i][j] == Valeur.caseVide.getValue())
-                    g.setColor(Color.GRAY);
-                else if(grille[i][j] == Valeur.trou.getValue())
-                    g.setColor(Color.BLACK);
-                else if(grille[i][j] == Valeur.mur.getValue())
-                    g.setColor(Color.DARK_GRAY);
-                g.fillRect(i * tailleCase + 1, j * tailleCase + 1, tailleCase - 1, tailleCase - 1);
-                g.setColor(Color.WHITE);
-                g.drawRect(i * tailleCase, j * tailleCase, tailleCase, tailleCase);
-            }
-        }*/
+                this.getHeight() / grille.length :
+                this.getWidth() / grille[0].length);
+        int diagonal = (int) (Math.sqrt(tailleCase * tailleCase + tailleCase * tailleCase) * (0.7));
 
-        for(int i = 0; i < grille.length; i++)
+        for (int i = 0; i < grille.length; i++)
         {
-            for(int j = 0; j < grille[0].length; j++)
+            for (int j = 0; j < grille[0].length; j++)
             {
                 if (grille[i][j] == Valeur.caseVide.getValue())
-                    g.setColor(Color.GRAY);
+                {
+                    if(this.model.getCurrent().canWalk(i,j))
+                        g.setColor(Color.GREEN);
+                    else
+                        g.setColor(Color.GRAY);
+                }
                 else if (grille[i][j] == Valeur.trou.getValue())
                     g.setColor(Color.BLACK);
                 else if (grille[i][j] == Valeur.mur.getValue())
                     g.setColor(Color.DARK_GRAY);
+                else if(grille[i][j] == Valeur.j1.getValue())
+                    g.setColor(Color.RED);
+                else if(grille[i][j] == Valeur.j2.getValue())
+                    g.setColor(Color.cyan);
                 int[] xPoints = new int[]{this.getWidth() / 2 + j * (diagonal / 2) - i * (diagonal / 2),
                         this.getWidth() / 2 + j * (diagonal / 2) - i * (diagonal / 2) - diagonal / 2 + 1,
                         this.getWidth() / 2 + j * (diagonal / 2) - i * (diagonal / 2),
@@ -103,11 +100,38 @@ public class GraphicsMap extends JComponent
                             this.getWidth() / 2 + j * (diagonal / 2) - i * (diagonal / 2),
                             i * (diagonal / 2) + j * (diagonal / 2) + diagonal - diagonal / 4);
 
-                }
-                else
-                    g.drawPolygon(xPoints, yPoints, 4);
+                } else
+                    g.drawPolygon(xPoints2, yPoints2, 4);
 
             }
         }
+        int[] xPoints;
+        int[] yPoints;
+        int i = mouseLigne;
+        int j = mouseCol;
+        g.setColor(Color.green);
+        if ( mouseLigne >= 0 && mouseLigne < grille.length && mouseCol >= 0 && mouseCol < grille[mouseLigne].length)
+        {
+            if( grille[mouseLigne][mouseCol] < 1){
+                xPoints = new int[]{this.getWidth() / 2 + j * (diagonal / 2) - i * (diagonal / 2),
+                        this.getWidth() / 2 + j * (diagonal / 2) - i * (diagonal / 2) - diagonal / 2 + 1,
+                        this.getWidth() / 2 + j * (diagonal / 2) - i * (diagonal / 2),
+                        this.getWidth() / 2 + j * (diagonal / 2) - i * (diagonal / 2) + diagonal / 2 - 1};
+                yPoints = new int[]{i * (diagonal / 2) + j * (diagonal / 2) + 1,
+                        i * (diagonal / 2) + j * (diagonal / 2) + diagonal / 2,
+                        i * (diagonal / 2) + j * (diagonal / 2) + diagonal - 1,
+                        i * (diagonal / 2) + j * (diagonal / 2) + diagonal / 2};
+                g.setColor(new Color(255, 123, 0,50));
+                g.fillPolygon(xPoints, yPoints, 4);
+            }
+            else
+              System.out.println(i + " " + j + " " + Valeur.values()[grille[i][j]].toString());
+        }
+    }
+
+    public void setMousePosition(int ligne, int colonne)
+    {
+        this.mouseLigne = ligne;
+        this.mouseCol = colonne;
     }
 }

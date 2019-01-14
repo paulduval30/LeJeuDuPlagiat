@@ -81,4 +81,10 @@ public class StdMap implements Map
     {
         return this.grillePersonnage;
     }
+
+    @Override
+    public int[][] genererMatrice()
+    {
+        return new int[1][1];
+    }
 }

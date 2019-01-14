@@ -15,4 +15,10 @@ public interface Game
     public void ajouterPersonnage(Personnage p);
 
     public void nextTurn();
+
+    public Personnage getJ1();
+
+    public Personnage getJ2();
+
+    public Personnage getCurrent();
 }

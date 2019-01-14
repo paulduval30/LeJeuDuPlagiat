@@ -23,12 +23,13 @@ public class StdPersonnage implements Personnage {
 
     int id;
 
-    public StdPersonnage(Map map){
+    public StdPersonnage(Map map, int id){
+        this.id = id;
         this.map = map;
         this.ligne = map.getGrillePersonnage()[1][1] == Valeur.caseVide.getValue() ? 1 :
-                map.getGrillePersonnage().length - 1;
+                map.getGrillePersonnage().length - 2;
         this.colonne = map.getGrillePersonnage()[1][1] == Valeur.caseVide.getValue() ? 1 :
-                map.getGrillePersonnage()[0].length - 1;;
+                map.getGrillePersonnage()[0].length - 2;;
         this.nom = "Sans nom";
         this.vie = 20;
         this.force = 3;
@@ -41,6 +42,7 @@ public class StdPersonnage implements Personnage {
         this.avatar = "default";
         this.lEquipement = new ArrayList();
         this.lSort = new ArrayList();
+        System.out.println(id + " " + ligne +" " + colonne);
     }
 
     @Override
@@ -111,13 +113,16 @@ public class StdPersonnage implements Personnage {
     }
 
     @Override
-    public boolean deplacer(int colonne, int ligne) {
-        if(this.map.getCase(ligne, colonne) < 1){
+    public boolean deplacer(int ligne, int colonne) {
+        if(this.canWalk(ligne, colonne)){
+            int dist = this.ligne + this.colonne - ligne - colonne;
             int v = this.map.getCase(this.ligne, this.colonne);
-            this.map.setCase(this.ligne, this.colonne, this.map.getOldCase(this.ligne, this.colonne));
+            this.map.setCase(this.ligne, this.colonne, this.map.getGrille()[ligne][colonne]);
             this.map.setCase(ligne, colonne, v);
+            this.ptsMouvement -= (dist >= 0 ? 1 : -1) * dist;
             this.colonne = colonne;
             this.ligne = ligne;
+            System.out.println("PM : " + this.ptsMouvement);
             return true;
         }
         return false;
@@ -136,5 +141,22 @@ public class StdPersonnage implements Personnage {
     @Override
     public List<Sort> getSorts() {
         return this.lSort;
+    }
+
+    @Override
+    public boolean canWalk(int ligne, int colonne)
+    {
+        int deltaCurrent = this.ligne + this.colonne;
+        int deltaNew = ligne + colonne;
+
+        return !(deltaCurrent - deltaNew > this.ptsMouvement || deltaNew - deltaCurrent > this.ptsMouvement
+                || this.map.getGrille()[ligne][colonne] > 0);
+    }
+
+    @Override
+    public void endTurn()
+    {
+        this.ptsMouvement = 6;
+        this.ptsAction = 3;
     }
 }
