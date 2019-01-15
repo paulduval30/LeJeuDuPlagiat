@@ -33,7 +33,7 @@ public class GameModel implements Game
                 {2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                 {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2}};
         this.map = new StdMap(mapModel);
-//       this.map = new StdMap(20,20);
+       //this.map = new StdMap(20,20);
        this.current = 0;
        this.personnages = new ArrayList<>();
     }

@@ -149,7 +149,7 @@ public class StdPersonnage implements Personnage {
         int deltaCurrent = this.ligne + this.colonne;
         int deltaNew = ligne + colonne;
 
-        return !(deltaCurrent - deltaNew > this.ptsMouvement || deltaNew - deltaCurrent > this.ptsMouvement
+        return !(deltaCurrent - deltaNew >= this.ptsMouvement || deltaNew - deltaCurrent >= this.ptsMouvement
                 || this.map.getGrille()[ligne][colonne] > 0);
     }
 

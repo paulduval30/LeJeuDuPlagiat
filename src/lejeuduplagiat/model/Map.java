@@ -1,6 +1,8 @@
 package lejeuduplagiat.model;
 
 
+import java.io.IOException;
+
 public interface Map
 {
     /**
@@ -39,7 +41,7 @@ public interface Map
 
     public int[][] getGrillePersonnage();
 
-    public int[][] genererMatrice();
+    public int[][] genererMatrice() throws IOException;
 
 
 }
