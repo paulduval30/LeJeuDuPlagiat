@@ -9,14 +9,21 @@ import java.util.HashMap;
 public class StdMap implements Map
 {
     private int[][] grille;
+
     private int[][] grillePersonnage;
 
     private int[][] matriceA;
+
+    int[][] matriceCoup;
+
     private HashMap<Integer, ArrayList<Integer>> listSucc;
 
     public StdMap(int[][] grille){
         this.grille = grille;
-        this.grillePersonnage = grille.clone();
+        this.grillePersonnage = new int[grille.length][grille.length];
+        for(int i = 0; i < grille.length; i++)
+            for (int j = 0; j < grille.length; j++)
+                this.grillePersonnage[i][j] = grille[i][j];
         try
         {
             this.matriceA = this.genererMatrice();
@@ -26,13 +33,18 @@ public class StdMap implements Map
             e.printStackTrace();
         }
 
+        matriceCoup = new int[grille.length][grille.length];
+
+
         listSucc = new HashMap<>();
+        remplirListSucc();
+
 
     }
 
     public StdMap(int nbLigne, int nbCol){
-        this.grille = new int[nbLigne][nbCol];
 
+        this.grille = new int[nbLigne][nbCol];
         for(int i = 0; i < nbLigne; i++)
         {
             for(int j = 0; j < nbCol; j++)
@@ -50,11 +62,17 @@ public class StdMap implements Map
             {
                 e.printStackTrace();
             }
+            matriceCoup = new int[grille.length][grille.length];
+
 
             listSucc = new HashMap<>();
+            remplirListSucc();
         }
 
-        this.grillePersonnage = this.grille.clone();
+        this.grillePersonnage = new int[grille.length][grille.length];
+        for(int i = 0; i < grille.length; i++)
+            for (int j = 0; j < grille.length; j++)
+                this.grillePersonnage[i][j] = grille[i][j];
     }
     @Override
     public int getNbColonne()
@@ -123,6 +141,8 @@ public class StdMap implements Map
         {
             for(int j = 0; j < grille.length; j++)
             {
+                if(grille[i][j] >= 1)
+                    continue;
 
                 if( i < grille.length - 1)
                 {
@@ -146,7 +166,6 @@ public class StdMap implements Map
                 }
             }
         }
-        System.out.println(matrice.length + "  " + matrice[0].length);
         FileWriter fw = new FileWriter(new File("test.txt"));
         for(int i = 0; i < matrice.length; i ++)
         {
@@ -160,7 +179,8 @@ public class StdMap implements Map
         return matrice;
     }
 
-    private void remplirListSucc()
+    @Override
+    public void remplirListSucc()
     {
         for(int i = 0; i < matriceA.length; i++)
         {
@@ -177,8 +197,98 @@ public class StdMap implements Map
         }
     }
 
-    private int getIncice(int i, int j)
+    @Override
+    public int getIncice(int i, int j)
     {
         return j + i * this.grille.length;
+    }
+
+    @Override
+    public ArrayList<int[]> getChemin(int ligneDep, int colDep, int ligneArr, int colArr, int pm)
+    {
+        ArrayList<int[]> chemin = new ArrayList<>();
+       /* boolean[][] visites = new boolean[grille.length][grille.length];
+        if(getDistance(ligneDep, colDep, ligneArr, colArr) == 1)
+        {
+            chemin.add(new int[]{ligneArr, colArr});
+            return chemin;
+        }
+        for(int i = 0; i < matriceCoup.length; i++)
+        {
+
+            for(int j = 0; j < matriceCoup.length; j++)
+            {
+                matriceCoup[i][j] = 100;
+            }
+        }
+
+        long time = System.currentTimeMillis();
+        genererMatriceCoup(0, ligneArr, colArr, pm, ligneDep, colDep);
+        for(int i = 0; i < matriceCoup.length; i++)
+        {
+            for(int j = 0; j < matriceCoup.length; j++)
+                System.out.print(String.format("|%3s|", matriceCoup[i][j]));
+            System.out.println("");
+        }
+        System.out.println(System.currentTimeMillis() - time + " " + ligneArr + " " + colArr);
+
+        int ligne = ligneDep;
+        int colonne = colDep;
+
+        int nextLigne = ligne;
+        int nextCol = colonne;
+
+        while(ligne != ligneArr || colonne != colArr)
+        {
+            int coup = this.matriceCoup[ligne][colonne];
+
+            if(ligne + 1 > 0 && matriceCoup[ligne + 1][colonne] < coup && !visites[ligne + 1][colonne])
+            {
+                System.out.println("BAS");
+                nextLigne = ligne + 1;
+                nextCol = colonne;
+                coup = matriceCoup[ligne + 1][colonne];
+
+            }
+
+            if(ligne - 1 > 0 && matriceCoup[ligne - 1][colonne] < coup && !visites[ligne - 1][colonne])
+            {
+                System.out.println("HAUT");
+                nextLigne = ligne - 1;
+                nextCol = colonne;
+                coup = matriceCoup[ligne -1][colonne];
+            }
+
+            if(colonne - 1 > 0 && matriceCoup[ligne][colonne - 1] < coup && !visites[ligne][colonne - 1])
+            {
+                System.out.println("GAUCHE");
+                nextLigne = ligne;
+                nextCol = colonne - 1;
+                coup = matriceCoup[ligne][colonne - 1];
+            }
+            if(colonne + 1 > 0 && matriceCoup[ligne][colonne + 1] < coup && !visites[ligne][colonne + 1])
+            {
+                System.out.println("DROITE");
+                nextLigne = ligne;
+                nextCol = colonne + 1;
+                coup = matriceCoup[ligne][colonne + 1];
+            }
+
+            visites[ligne][colonne] = true;
+            chemin.add(new int[]{nextLigne, nextCol});
+            ligne = nextLigne;
+            colonne = nextCol;
+        }
+
+        chemin.add(new int[]{ligneArr, colArr});*/
+
+        return chemin;
+    }
+
+
+    @Override
+    public int getDistance(int iDep, int jDep, int iArr, int jArr)
+    {
+        return Math.abs(iDep - iArr)+ Math.abs(jDep - jArr);
     }
 }

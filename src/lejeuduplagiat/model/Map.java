@@ -2,6 +2,7 @@ package lejeuduplagiat.model;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public interface Map
 {
@@ -44,4 +45,11 @@ public interface Map
     public int[][] genererMatrice() throws IOException;
 
 
+    void remplirListSucc();
+
+    int getIncice(int i, int j);
+
+    ArrayList<int[]> getChemin(int ligneDep, int colDep, int ligneArr, int colArr, int pm);
+
+    int getDistance(int iDep, int jDep, int iArr, int jArr);
 }

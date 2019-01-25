@@ -17,7 +17,6 @@ public class GraphicsMap extends JComponent
         this.model = model;
         this.dim = dim;
         this.setPreferredSize(dim);
-        System.out.println(this.getHeight() + "  " + this.getWidth());
 
     }
 
@@ -121,11 +120,9 @@ public class GraphicsMap extends JComponent
                         i * (diagonal / 2) + j * (diagonal / 2) + diagonal / 2,
                         i * (diagonal / 2) + j * (diagonal / 2) + diagonal - 1,
                         i * (diagonal / 2) + j * (diagonal / 2) + diagonal / 2};
-                g.setColor(new Color(255, 123, 0,50));
+                g.setColor(new Color(255, 123, 0,100));
                 g.fillPolygon(xPoints, yPoints, 4);
             }
-            else
-              System.out.println(i + " " + j + " " + Valeur.values()[grille[i][j]].toString());
         }
     }
 
@@ -134,4 +131,5 @@ public class GraphicsMap extends JComponent
         this.mouseLigne = ligne;
         this.mouseCol = colonne;
     }
+
 }

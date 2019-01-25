@@ -5,6 +5,8 @@ import java.util.List;
 
 public class StdPersonnage implements Personnage {
 
+    private int[][] matriceCoup;
+
     private int colonne;
     private int ligne;
     private int vie;
@@ -42,7 +44,19 @@ public class StdPersonnage implements Personnage {
         this.avatar = "default";
         this.lEquipement = new ArrayList();
         this.lSort = new ArrayList();
-        System.out.println(id + " " + ligne +" " + colonne);
+        this.matriceCoup = new int[this.map.getGrille().length][this.map.getGrille().length];
+
+        for(int i = 0; i < matriceCoup.length; i++)
+        {
+
+            for(int j = 0; j < matriceCoup.length; j++)
+            {
+                matriceCoup[i][j] = 100;
+            }
+        }
+
+        this.genererMatriceCoup(0, this.ligne, this.colonne);
+
     }
 
     @Override
@@ -123,6 +137,26 @@ public class StdPersonnage implements Personnage {
             this.colonne = colonne;
             this.ligne = ligne;
             System.out.println("PM : " + this.ptsMouvement);
+
+            for(int i = 0; i < matriceCoup.length; i++)
+            {
+
+                for(int j = 0; j < matriceCoup.length; j++)
+                {
+                    matriceCoup[i][j] = 100;
+                }
+            }
+
+            this.genererMatriceCoup(0, this.ligne, this.colonne);
+
+            for(int i[] : matriceCoup)
+            {
+                for(int j : i)
+                {
+                    System.out.print(String.format("|%3s|", j));
+                }
+                System.out.println();
+            }
             return true;
         }
         return false;
@@ -146,11 +180,7 @@ public class StdPersonnage implements Personnage {
     @Override
     public boolean canWalk(int ligne, int colonne)
     {
-        int deltaCurrent = this.ligne + this.colonne;
-        int deltaNew = ligne + colonne;
-
-        return !(deltaCurrent - deltaNew >= this.ptsMouvement || deltaNew - deltaCurrent >= this.ptsMouvement
-                || this.map.getGrille()[ligne][colonne] > 0);
+        return this.matriceCoup[ligne][colonne] <= this.ptsMouvement;
     }
 
     @Override
@@ -158,5 +188,45 @@ public class StdPersonnage implements Personnage {
     {
         this.ptsMouvement = 6;
         this.ptsAction = 3;
+    }
+
+    public int[][] getMatriceCoup()
+    {
+        return this.matriceCoup;
+    }
+
+    private void genererMatriceCoup(int id, int ligneArr, int colArr)
+    {
+
+        matriceCoup[ligneArr][colArr] = id;
+        id++;
+        if ((ligneArr - 1) > 0 && this.map.getGrille()[ligneArr - 1][colArr] < 1
+                && matriceCoup[ligneArr - 1][colArr] > id)
+        {
+            this.genererMatriceCoup(id, ligneArr - 1, colArr);
+        }
+
+        if (ligneArr + 1 < this.map.getGrille().length && this.map.getGrille()[ligneArr + 1][colArr] < 1
+                && matriceCoup[ligneArr + 1][colArr] > id)
+        {
+            this.genererMatriceCoup(id, ligneArr + 1, colArr);
+        }
+
+        if (colArr - 1 > 0 && this.map.getGrille()[ligneArr][colArr - 1] < 1
+                && matriceCoup[ligneArr][colArr - 1] > id)
+        {
+            this.genererMatriceCoup(id, ligneArr, colArr - 1);
+        }
+
+        if (colArr + 1 < this.map.getGrille().length && this.map.getGrille()[ligneArr][colArr + 1] < 1
+                && matriceCoup[ligneArr][colArr + 1] > id)
+        {
+            this.genererMatriceCoup(id, ligneArr, colArr + 1);
+        }
+    }
+
+    public static void main(String[] argv)
+    {
+
     }
 }

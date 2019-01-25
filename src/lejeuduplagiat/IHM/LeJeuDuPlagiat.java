@@ -47,12 +47,11 @@ public class LeJeuDuPlagiat
 
                 double i = (((graphicsMap.getWidth() / 2 + y - x)/ 2)/d);
                 double j = (y / d) - i;
-                System.out.println(i + "           " + j);
                 int ligne = (int)i;
                 int colonne = (int)j;
 
-                System.out.println(ligne + "          " + colonne);
                 model.deplacer(model.getCurrent(), ligne, colonne);
+                refresh();
             }
 
             @Override
@@ -100,8 +99,8 @@ public class LeJeuDuPlagiat
                 int colonne = (int)j;
 
                 graphicsMap.setMousePosition(ligne, colonne);
-                System.out.println(ligne + " " + colonne);
-                refresh();
+
+               // refresh();
             }
         };
 
@@ -114,6 +113,7 @@ public class LeJeuDuPlagiat
             public void actionPerformed(ActionEvent e)
             {
                 model.nextTurn();
+                refresh();
             }
         };
 
@@ -123,7 +123,10 @@ public class LeJeuDuPlagiat
     private void placeComponents()
     {
         this.mainFrame.add(graphicsMap, BorderLayout.CENTER);
-        this.mainFrame.add(nextTurn, BorderLayout.WEST);
+        JPanel p = new JPanel();{
+            p.add(nextTurn);
+    }
+    this.mainFrame.add(p, BorderLayout.SOUTH);
     }
 
     private void createView()
@@ -137,10 +140,11 @@ public class LeJeuDuPlagiat
     }
 
     private void display() {
-        refresh();
-        mainFrame.setLocation(20,20);
+        mainFrame.setLocation(10,10);
         this.mainFrame.setSize(800, 800);
         mainFrame.setVisible(true);
+        mainFrame.setFocusable(false);
+        refresh();
     }
 
     private void refresh()

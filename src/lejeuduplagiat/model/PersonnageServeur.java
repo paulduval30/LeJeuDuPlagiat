@@ -4,6 +4,48 @@ import java.util.List;
 
 public class PersonnageServeur implements Personnage
 {
+    private int colonne;
+    private int ligne;
+    private int vie;
+    private String nom;
+    private int force;
+    private int armure;
+    private int vitesse;
+    private int intell;
+    private int chanceCrit;
+    private int ptsMouvement;
+    private int ptsAction;
+    private String avatar;
+    private List lEquipement;
+    private List lSort;
+    private Map map;
+
+    int id;
+
+    public PersonnageServeur(int ligne, int colonne, int vie, String nom,
+                             int force, int armure, int vitesse, int intell,
+                             int chanceCrit, int ptsMouvement, int ptsAction,
+                             String avatar, List lEquipement, List lSort,
+                             Map map, int id)
+    {
+        this.colonne = colonne;
+        this.ligne = ligne;
+        this.vie = vie;
+        this.nom = nom;
+        this.force = force;
+        this.armure = armure;
+        this.vitesse = vitesse;
+        this.intell = intell;
+        this.chanceCrit = chanceCrit;
+        this.ptsMouvement = ptsMouvement;
+        this.ptsAction = ptsAction;
+        this.avatar = avatar;
+        this.lEquipement = lEquipement;
+        this.lSort = lSort;
+        this.map = map;
+        this.id = id;
+    }
+
     @Override
     public int getColonne()
     {
