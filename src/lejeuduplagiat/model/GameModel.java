@@ -1,13 +1,21 @@
 package lejeuduplagiat.model;
 
+import lejeuduplagiat.network.client.Client;
+import lejeuduplagiat.network.client.Paquet;
+import lejeuduplagiat.network.serveur.Serveur;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameModel implements Game
 {
+    private Serveur serveur;
     private Map map;
+    private Personnage localPlayer;
     private List<Personnage> personnages;
     private int current;
+
+    private Client client;
 
     public GameModel()
     {
@@ -36,6 +44,9 @@ public class GameModel implements Game
        //this.map = new StdMap(20,20);
        this.current = 0;
        this.personnages = new ArrayList<>();
+       this.localPlayer = null;
+
+
     }
 
     @Override
@@ -53,13 +64,18 @@ public class GameModel implements Game
     @Override
     public Personnage getPersonnage(int joueur)
     {
-        return this.personnages.get(joueur);
+        return this.personnages.size() > 0 ? this.personnages.get(joueur) : null;
     }
 
     @Override
     public boolean deplacer(Personnage p, int ligne, int colonne)
     {
-        return p != null && p.deplacer(ligne, colonne);
+        boolean canMove = false;
+        if(p != null)
+             canMove = p.deplacer(ligne, colonne);
+        if(canMove && p.getId() == localPlayer.getId())
+            Paquet.envoyerDeplacement(ligne, colonne, p, client);
+        return canMove;
     }
 
     @Override
@@ -67,8 +83,26 @@ public class GameModel implements Game
     {
         if(p == null)
             return;
-        this.personnages.add(p);
-        this.map.setCase(p.getLigne(), p.getColonne(),p.getId());
+        if(localPlayer == null)
+        {
+            this.localPlayer = p;
+            this.personnages.add(p);
+            this.map.setCase(p.getLigne(), p.getColonne(),p.getId());
+
+        }
+        else if(this.localPlayer.getId() != p.getId())
+        {
+            this.personnages.add(p);
+            this.map.setCase(p.getLigne(), p.getColonne(),p.getId());
+        }
+    }
+
+    public void creerClient()
+    {
+        if(this.client == null){
+            this.client = new Client(this);
+            this.client.connect("127.0.0.1",25566);
+        }
     }
 
     @Override
@@ -95,8 +129,21 @@ public class GameModel implements Game
     @Override
     public Personnage getCurrent()
     {
-        return this.personnages.get(current);
+        return this.personnages.size() > 0 ? this.personnages.get(this.current) : null;
+    }
+
+    public Personnage getLocalPlayer(){
+        return this.localPlayer;
     }
 
 
+    public Client getClient()
+    {
+        return client;
+    }
+
+    public void setCurrent(int current)
+    {
+        this.current = current;
+    }
 }

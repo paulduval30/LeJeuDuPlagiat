@@ -44,6 +44,7 @@ public class ClientSocket implements Runnable
 
     public void send(String message)
     {
+        System.out.println("ENVOIE : " + message);
         try
         {
             this.out.writeUTF(message);
@@ -62,21 +63,18 @@ public class ClientSocket implements Runnable
             try
             {
                 String message = this.in.readUTF();
-                System.out.println(message);
-                /*String[] paquet = message.split("->");
+                System.out.println("RECEPTION : " + message);
+                String[] paquet = message.split("->");
                 switch (paquet[0])
                 {
-                    case "0" : Reception.recevoirBateau(paquet[1]);
+                    case "1" : Reception.recevoirJoueurDeClient(paquet[1]);
                         break;
-                    case "1" : Reception.recevoirTir(paquet[1], this);
+                    case "2" : Reception.recevoirDeplacement(paquet[1]);
                         break;
-                    case "3" : Reception.recevoirFinTour(paquet[1], this);
-                        break;
-                    case "4" : Reception.recevoirConnection(paquet[1]);
-                        break;
+                    case "3" : Reception.recevoirFinTour();
                     default:
                         break;
-                }*/
+                }
             }
             catch (Exception e)
             {

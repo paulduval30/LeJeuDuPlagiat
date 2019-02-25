@@ -3,6 +3,7 @@ package lejeuduplagiat.IHM;
 import lejeuduplagiat.model.GameModel;
 import lejeuduplagiat.model.StdPersonnage;
 import lejeuduplagiat.model.Valeur;
+import lejeuduplagiat.network.client.Paquet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,6 +52,8 @@ public class LeJeuDuPlagiat
                 int colonne = (int)j;
 
                 model.deplacer(model.getCurrent(), ligne, colonne);
+
+
                 refresh();
             }
 
@@ -99,8 +102,7 @@ public class LeJeuDuPlagiat
                 int colonne = (int)j;
 
                 graphicsMap.setMousePosition(ligne, colonne);
-
-               // refresh();
+               refresh();
             }
         };
 
@@ -155,10 +157,9 @@ public class LeJeuDuPlagiat
     private void createModel()
     {
         this.model = new GameModel();
-        StdPersonnage j1 = new StdPersonnage(this.model.getMap(), Valeur.j1.getValue());
-        model.ajouterPersonnage(j1);
-        StdPersonnage j2 = new StdPersonnage(this.model.getMap(), Valeur.j2.getValue());
-        model.ajouterPersonnage(j2);
+        model.creerClient();
+        Paquet.envoyerJoueurAServeur(new StdPersonnage("Johnny", this.model.getMap()),this.model.getClient());
+
     }
 
     public static void main(String[] argv)

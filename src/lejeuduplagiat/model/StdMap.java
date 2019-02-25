@@ -12,11 +12,6 @@ public class StdMap implements Map
 
     private int[][] grillePersonnage;
 
-    private int[][] matriceA;
-
-    int[][] matriceCoup;
-
-    private HashMap<Integer, ArrayList<Integer>> listSucc;
 
     public StdMap(int[][] grille){
         this.grille = grille;
@@ -24,22 +19,6 @@ public class StdMap implements Map
         for(int i = 0; i < grille.length; i++)
             for (int j = 0; j < grille.length; j++)
                 this.grillePersonnage[i][j] = grille[i][j];
-        try
-        {
-            this.matriceA = this.genererMatrice();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        matriceCoup = new int[grille.length][grille.length];
-
-
-        listSucc = new HashMap<>();
-        remplirListSucc();
-
-
     }
 
     public StdMap(int nbLigne, int nbCol){
@@ -54,19 +33,6 @@ public class StdMap implements Map
                 else
                     this.grille[i][j] = Valeur.caseVide.getValue();
             }
-            try
-            {
-                this.matriceA = this.genererMatrice();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-            matriceCoup = new int[grille.length][grille.length];
-
-
-            listSucc = new HashMap<>();
-            remplirListSucc();
         }
 
         this.grillePersonnage = new int[grille.length][grille.length];
@@ -133,71 +99,6 @@ public class StdMap implements Map
     }
 
     @Override
-    public int[][] genererMatrice() throws IOException
-    {
-        int[][] matrice = new int[grille.length * grille.length][grille.length * grille.length];
-
-        for(int i = 0; i < grille.length; i++)
-        {
-            for(int j = 0; j < grille.length; j++)
-            {
-                if(grille[i][j] >= 1)
-                    continue;
-
-                if( i < grille.length - 1)
-                {
-                    matrice[this.getIncice(i, j)][this.getIncice(i + 1, j)] = grille[i + 1][j] < 1 ? 1 : 0;
-                    matrice[this.getIncice(i + 1, j)][this.getIncice(i,j)] = grille[i + 1][j] < 1 ? 1 : 0;
-                }
-                if( i > 0)
-                {
-                    matrice[this.getIncice(i, j)][this.getIncice(i - 1, j)] = grille[i - 1][j] < 1 ? 1 : 0;
-                    matrice[this.getIncice(i - 1, j)][this.getIncice(i,j)] = grille[i - 1][j] < 1 ? 1 : 0;
-                }
-                if( j < grille.length - 1)
-                {
-                    matrice[this.getIncice(i, j)][this.getIncice(i, j + 1)] = grille[i][j + 1] < 1 ? 1 : 0;
-                    matrice[this.getIncice(i, j + 1)][this.getIncice(i,j)] = grille[i][j + 1] < 1 ? 1 : 0;
-                }
-                if( j > 0)
-                {
-                    matrice[this.getIncice(i, j)][this.getIncice(i , j - 1)] = grille[i][j - 1] < 1 ? 1 : 0;
-                    matrice[this.getIncice(i , j - 1)][this.getIncice(i,j)] = grille[i][j - 1] < 1 ? 1 : 0;
-                }
-            }
-        }
-        FileWriter fw = new FileWriter(new File("test.txt"));
-        for(int i = 0; i < matrice.length; i ++)
-        {
-            for(int j = 0; j < matrice[0].length; j++)
-            {
-                fw.write("|" + matrice[i][j] + "|");
-            }
-            fw.write("\n");
-        }
-        fw.close();
-        return matrice;
-    }
-
-    @Override
-    public void remplirListSucc()
-    {
-        for(int i = 0; i < matriceA.length; i++)
-        {
-            this.listSucc.put(i, new ArrayList<>());
-        }
-
-        for(int i = 0; i < matriceA.length; i++)
-        {
-            for(int j = 0; j < matriceA.length; j++)
-            {
-                if(matriceA[i][j] == 1)
-                    listSucc.get(i).add(j);
-            }
-        }
-    }
-
-    @Override
     public int getIncice(int i, int j)
     {
         return j + i * this.grille.length;
@@ -207,84 +108,42 @@ public class StdMap implements Map
     public ArrayList<int[]> getChemin(int ligneDep, int colDep, int ligneArr, int colArr, int pm)
     {
         ArrayList<int[]> chemin = new ArrayList<>();
-       /* boolean[][] visites = new boolean[grille.length][grille.length];
-        if(getDistance(ligneDep, colDep, ligneArr, colArr) == 1)
-        {
-            chemin.add(new int[]{ligneArr, colArr});
-            return chemin;
-        }
-        for(int i = 0; i < matriceCoup.length; i++)
-        {
-
-            for(int j = 0; j < matriceCoup.length; j++)
-            {
-                matriceCoup[i][j] = 100;
-            }
-        }
-
-        long time = System.currentTimeMillis();
-        genererMatriceCoup(0, ligneArr, colArr, pm, ligneDep, colDep);
-        for(int i = 0; i < matriceCoup.length; i++)
-        {
-            for(int j = 0; j < matriceCoup.length; j++)
-                System.out.print(String.format("|%3s|", matriceCoup[i][j]));
-            System.out.println("");
-        }
-        System.out.println(System.currentTimeMillis() - time + " " + ligneArr + " " + colArr);
-
-        int ligne = ligneDep;
-        int colonne = colDep;
-
-        int nextLigne = ligne;
-        int nextCol = colonne;
-
-        while(ligne != ligneArr || colonne != colArr)
-        {
-            int coup = this.matriceCoup[ligne][colonne];
-
-            if(ligne + 1 > 0 && matriceCoup[ligne + 1][colonne] < coup && !visites[ligne + 1][colonne])
-            {
-                System.out.println("BAS");
-                nextLigne = ligne + 1;
-                nextCol = colonne;
-                coup = matriceCoup[ligne + 1][colonne];
-
-            }
-
-            if(ligne - 1 > 0 && matriceCoup[ligne - 1][colonne] < coup && !visites[ligne - 1][colonne])
-            {
-                System.out.println("HAUT");
-                nextLigne = ligne - 1;
-                nextCol = colonne;
-                coup = matriceCoup[ligne -1][colonne];
-            }
-
-            if(colonne - 1 > 0 && matriceCoup[ligne][colonne - 1] < coup && !visites[ligne][colonne - 1])
-            {
-                System.out.println("GAUCHE");
-                nextLigne = ligne;
-                nextCol = colonne - 1;
-                coup = matriceCoup[ligne][colonne - 1];
-            }
-            if(colonne + 1 > 0 && matriceCoup[ligne][colonne + 1] < coup && !visites[ligne][colonne + 1])
-            {
-                System.out.println("DROITE");
-                nextLigne = ligne;
-                nextCol = colonne + 1;
-                coup = matriceCoup[ligne][colonne + 1];
-            }
-
-            visites[ligne][colonne] = true;
-            chemin.add(new int[]{nextLigne, nextCol});
-            ligne = nextLigne;
-            colonne = nextCol;
-        }
-
-        chemin.add(new int[]{ligneArr, colArr});*/
 
         return chemin;
     }
 
+    @Override
+    public int[][] genererMatriceCoup(int[][] matriceCoup, int id, int ligneArr, int colArr)
+    {
+
+        matriceCoup[ligneArr][colArr] = id;
+        id++;
+        if ((ligneArr - 1) >= 0 && this.grille[ligneArr - 1][colArr] < 1
+                && matriceCoup[ligneArr - 1][colArr] > id)
+        {
+            this.genererMatriceCoup(matriceCoup, id, ligneArr - 1, colArr);
+        }
+
+        if (ligneArr + 1 < this.grille.length && this.grille[ligneArr + 1][colArr] < 1
+                && matriceCoup[ligneArr + 1][colArr] > id)
+        {
+            this.genererMatriceCoup(matriceCoup, id, ligneArr + 1, colArr);
+        }
+
+        if (colArr - 1 >= 0 && this.grille[ligneArr][colArr - 1] < 1
+                && matriceCoup[ligneArr][colArr - 1] > id)
+        {
+            this.genererMatriceCoup(matriceCoup, id, ligneArr, colArr - 1);
+        }
+
+        if (colArr + 1 < this.grille.length && this.grille[ligneArr][colArr + 1] < 1
+                && matriceCoup[ligneArr][colArr + 1] > id)
+        {
+            this.genererMatriceCoup(matriceCoup, id, ligneArr, colArr + 1);
+        }
+
+        return matriceCoup;
+    }
 
     @Override
     public int getDistance(int iDep, int jDep, int iArr, int jArr)

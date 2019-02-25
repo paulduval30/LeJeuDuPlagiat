@@ -1,5 +1,6 @@
 package lejeuduplagiat.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface Personnage
@@ -53,4 +54,6 @@ public interface Personnage
     boolean canWalk(int ligne, int colonne);
 
     public void endTurn();
+
+    public ArrayList<int[]> getChemin(int ligneArr, int colArr);
 }

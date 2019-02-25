@@ -42,14 +42,13 @@ public interface Map
 
     public int[][] getGrillePersonnage();
 
-    public int[][] genererMatrice() throws IOException;
-
-
-    void remplirListSucc();
-
     int getIncice(int i, int j);
 
     ArrayList<int[]> getChemin(int ligneDep, int colDep, int ligneArr, int colArr, int pm);
 
+    int[][] genererMatriceCoup(int[][] matriceCoup, int id, int ligneArr, int colArr);
+
     int getDistance(int iDep, int jDep, int iArr, int jArr);
+
+
 }

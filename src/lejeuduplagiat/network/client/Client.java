@@ -1,6 +1,6 @@
 package lejeuduplagiat.network.client;
 
-import lejeuduplagiat.model.Personnage;
+import lejeuduplagiat.model.GameModel;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,12 +15,12 @@ public class Client implements Runnable
 
     private DataOutputStream output;
     private DataInputStream input;
-    private Personnage personnage;
+    private GameModel game;
 
 
-    public Client(Personnage personnage)
+    public Client(GameModel game)
     {
-        this.personnage = personnage;
+        this.game = game;
         try
         {
             this.socket = new Socket();
@@ -51,6 +51,7 @@ public class Client implements Runnable
 
     public void send(String message)
     {
+        System.out.println("ENVOIE : " + message);
         try
         {
             this.output.writeUTF(message);
@@ -69,22 +70,25 @@ public class Client implements Runnable
             try
             {
                 String message = input.readUTF();
-                System.out.println(message);
-                /*String[] sData = message.split("->");
+
+                System.out.println("RECEPTION : " + message);
+                String[] sData = message.split("->");
                 String paquet = sData[0];
                 String data = sData[1];
                 switch (paquet)
                 {
-                    case "0" : Reception.recevoirDebut(data, this.joueur);
+
+                    case "1" : Reception.recevoirJoueurDeServeur(data, game);
                         break;
-                    case "1" : Reception.recevoirNom(data, this.joueur);
+                    case "2" : Reception.recevoirDeplacement(data, game);
                         break;
-                    case "2" : Reception.recevoirTour(data, this.joueur);
+                    case "3" : Reception.recevoirFinTour(game);
                         break;
-                    case "3" : Reception.recevoirTir(data, this.joueur);
+                    case "4" : Reception.recevoirCurrent(data, game);
                     default:
                         break;
-                }*/
+                }
+
             }
             catch(Exception e )
             {

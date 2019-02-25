@@ -1,5 +1,8 @@
 package lejeuduplagiat.model;
 
+import lejeuduplagiat.network.client.Client;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonnageServeur implements Personnage
@@ -20,6 +23,8 @@ public class PersonnageServeur implements Personnage
     private List lSort;
     private Map map;
 
+
+
     int id;
 
     public PersonnageServeur(int ligne, int colonne, int vie, String nom,
@@ -28,8 +33,10 @@ public class PersonnageServeur implements Personnage
                              String avatar, List lEquipement, List lSort,
                              Map map, int id)
     {
-        this.colonne = colonne;
-        this.ligne = ligne;
+        this.ligne = map.getGrillePersonnage()[1][1] == Valeur.caseVide.getValue() ? 1 :
+                map.getGrillePersonnage().length - 2;
+        this.colonne = map.getGrillePersonnage()[1][1] == Valeur.caseVide.getValue() ? 1 :
+                map.getGrillePersonnage()[0].length - 2;
         this.vie = vie;
         this.nom = nom;
         this.force = force;
@@ -44,84 +51,86 @@ public class PersonnageServeur implements Personnage
         this.lSort = lSort;
         this.map = map;
         this.id = id;
+
+
     }
 
     @Override
     public int getColonne()
     {
-        return 0;
+        return this.colonne;
     }
 
     @Override
     public int getLigne()
     {
-        return 0;
+        return this.ligne;
     }
 
     @Override
     public String getNom()
     {
-        return null;
+        return this.nom;
     }
 
     @Override
     public int getVie()
     {
-        return 0;
+        return this.vie;
     }
 
     @Override
     public int getForce()
     {
-        return 0;
+        return this.force;
     }
 
     @Override
     public int getArmure()
     {
-        return 0;
+        return this.armure;
     }
 
     @Override
     public int getVitesse()
     {
-        return 0;
+        return this.vitesse;
     }
 
     @Override
     public int getIntelligence()
     {
-        return 0;
+        return this.intell;
     }
 
     @Override
     public int getChanceCritique()
     {
-        return 0;
+        return this.chanceCrit;
     }
 
     @Override
     public int getPointMouvement()
     {
-        return 0;
+        return this.ptsMouvement;
     }
 
     @Override
     public int getPointAction()
     {
-        return 0;
+        return this.ptsAction;
     }
 
     @Override
     public int getId()
     {
-        return 0;
+        return this.id;
     }
 
     @Override
     public void setId(int id)
     {
-
+        this.id = id;
     }
 
     @Override
@@ -133,19 +142,19 @@ public class PersonnageServeur implements Personnage
     @Override
     public String getAvatar()
     {
-        return null;
+        return this.avatar;
     }
 
     @Override
     public List<Equipement> getEquipements()
     {
-        return null;
+        return this.lEquipement;
     }
 
     @Override
     public List<Sort> getSorts()
     {
-        return null;
+        return this.lSort;
     }
 
     @Override
@@ -158,5 +167,12 @@ public class PersonnageServeur implements Personnage
     public void endTurn()
     {
 
+    }
+
+
+    @Override
+    public ArrayList<int[]> getChemin(int ligneArr, int colArr)
+    {
+        return null;
     }
 }

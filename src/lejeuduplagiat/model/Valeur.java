@@ -6,7 +6,9 @@ public enum Valeur
     trou(1, "trou"),
     mur(2, "mur"),
     j1(3, "j1"),
-    j2(4, "j2");
+    j2(4, "j2"),
+    j3(5, "j3"),
+    j4(6, "j4");
 
     private final int value;
     private final String name;

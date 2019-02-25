@@ -42,10 +42,17 @@ public class GraphicsMap extends JComponent
             {
                 if (grille[i][j] == Valeur.caseVide.getValue())
                 {
-                    if(this.model.getCurrent().canWalk(i,j))
-                        g.setColor(Color.GREEN);
-                    else
-                        g.setColor(Color.GRAY);
+                    g.setColor(Color.GRAY);
+                    if(this.model.getPersonnages().size() > 0 &&
+                            this.model.getLocalPlayer() == this.model.getCurrent() &&
+                            this.model.getLocalPlayer().canWalk(i,j))
+                        g.setColor(new Color(0,255,0));
+                    if(grille[mouseLigne][mouseCol] >= 3)
+                        if(this.model.getPersonnages().size() > 0 &&
+                                this.model.getPersonnage(grille[mouseLigne][mouseCol] - 3).canWalk(i,j))
+                            g.setColor(new Color(10, 86, 29));
+
+
                 }
                 else if (grille[i][j] == Valeur.trou.getValue())
                     g.setColor(Color.BLACK);
@@ -128,6 +135,12 @@ public class GraphicsMap extends JComponent
 
     public void setMousePosition(int ligne, int colonne)
     {
+        if(ligne < 0) ligne = 0;
+        if(colonne < 0) colonne = 0;
+        if(ligne >= this.model.getMap().getGrille().length)
+            ligne = this.model.getMap().getGrille().length -1;
+        if(colonne >= this.model.getMap().getGrille()[ligne].length)
+            colonne = this.model.getMap().getGrille()[ligne].length -1;
         this.mouseLigne = ligne;
         this.mouseCol = colonne;
     }

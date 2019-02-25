@@ -1,5 +1,8 @@
 package lejeuduplagiat.model;
 
+import lejeuduplagiat.network.client.Client;
+import lejeuduplagiat.network.client.Paquet;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +25,15 @@ public class StdPersonnage implements Personnage {
     private List lEquipement;
     private List lSort;
     private Map map;
-
+    private Client client;
     int id;
 
-    public StdPersonnage(Map map, int id){
-        this.id = id;
+    public StdPersonnage(String nom, Map map){
         this.map = map;
         this.ligne = map.getGrillePersonnage()[1][1] == Valeur.caseVide.getValue() ? 1 :
                 map.getGrillePersonnage().length - 2;
         this.colonne = map.getGrillePersonnage()[1][1] == Valeur.caseVide.getValue() ? 1 :
-                map.getGrillePersonnage()[0].length - 2;;
+                map.getGrillePersonnage()[0].length - 2;
         this.nom = "Sans nom";
         this.vie = 20;
         this.force = 3;
@@ -45,7 +47,7 @@ public class StdPersonnage implements Personnage {
         this.lEquipement = new ArrayList();
         this.lSort = new ArrayList();
         this.matriceCoup = new int[this.map.getGrille().length][this.map.getGrille().length];
-
+        this.nom = nom;
         for(int i = 0; i < matriceCoup.length; i++)
         {
 
@@ -55,8 +57,41 @@ public class StdPersonnage implements Personnage {
             }
         }
 
-        this.genererMatriceCoup(0, this.ligne, this.colonne);
+        this.matriceCoup = this.map.genererMatriceCoup(this.matriceCoup, 0, this.ligne, this.colonne);
 
+    }
+
+    public StdPersonnage(int ligne, int colonne, int vie, String nom, int force, int armure, int vitesse,
+                         int intell, int chanceCrit, int ptsMouvement, int ptsAction,
+                         String s, ArrayList<Equipement> lEquipement, ArrayList<Sort> lSort, Map map, int id)
+    {
+        this.colonne = colonne;
+        this.ligne = ligne;
+        this.vie = vie;
+        this.nom = nom;
+        this.force = force;
+        this.armure = armure;
+        this.vitesse = vitesse;
+        this.intell = intell;
+        this.chanceCrit = chanceCrit;
+        this.ptsMouvement = ptsMouvement;
+        this.ptsAction = ptsAction;
+        this.avatar = avatar;
+        this.lEquipement = lEquipement;
+        this.lSort = lSort;
+        this.map = map;
+        this.id = id;
+        this.matriceCoup = new int[this.map.getGrille().length][this.map.getGrille().length];
+        for(int i = 0; i < matriceCoup.length; i++)
+        {
+
+            for(int j = 0; j < matriceCoup.length; j++)
+            {
+                matriceCoup[i][j] = 100;
+            }
+        }
+
+        this.matriceCoup = this.map.genererMatriceCoup(this.matriceCoup, 0, this.ligne, this.colonne);
     }
 
     @Override
@@ -129,15 +164,13 @@ public class StdPersonnage implements Personnage {
     @Override
     public boolean deplacer(int ligne, int colonne) {
         if(this.canWalk(ligne, colonne)){
-            int dist = this.ligne + this.colonne - ligne - colonne;
+            int dist = this.matriceCoup[ligne][colonne];
             int v = this.map.getCase(this.ligne, this.colonne);
             this.map.setCase(this.ligne, this.colonne, this.map.getGrille()[ligne][colonne]);
             this.map.setCase(ligne, colonne, v);
             this.ptsMouvement -= (dist >= 0 ? 1 : -1) * dist;
             this.colonne = colonne;
             this.ligne = ligne;
-            System.out.println("PM : " + this.ptsMouvement);
-
             for(int i = 0; i < matriceCoup.length; i++)
             {
 
@@ -147,7 +180,7 @@ public class StdPersonnage implements Personnage {
                 }
             }
 
-            this.genererMatriceCoup(0, this.ligne, this.colonne);
+            this.matriceCoup = this.map.genererMatriceCoup(this.matriceCoup, 0, this.ligne, this.colonne);
 
             for(int i[] : matriceCoup)
             {
@@ -155,7 +188,6 @@ public class StdPersonnage implements Personnage {
                 {
                     System.out.print(String.format("|%3s|", j));
                 }
-                System.out.println();
             }
             return true;
         }
@@ -180,7 +212,7 @@ public class StdPersonnage implements Personnage {
     @Override
     public boolean canWalk(int ligne, int colonne)
     {
-        return this.matriceCoup[ligne][colonne] <= this.ptsMouvement;
+        return this.map.getGrillePersonnage()[ligne][colonne] < 1 &&  this.matriceCoup[ligne][colonne] <= this.ptsMouvement;
     }
 
     @Override
@@ -195,34 +227,48 @@ public class StdPersonnage implements Personnage {
         return this.matriceCoup;
     }
 
-    private void genererMatriceCoup(int id, int ligneArr, int colArr)
+
+    public ArrayList<int[]> getChemin(int ligneArr, int colArr)
     {
+        int ligne = ligneArr;
+        int colonne = colArr;
+        int coup = 100;
 
-        matriceCoup[ligneArr][colArr] = id;
-        id++;
-        if ((ligneArr - 1) > 0 && this.map.getGrille()[ligneArr - 1][colArr] < 1
-                && matriceCoup[ligneArr - 1][colArr] > id)
-        {
-            this.genererMatriceCoup(id, ligneArr - 1, colArr);
-        }
+        ArrayList<int[]> chemin = new ArrayList<>();
 
-        if (ligneArr + 1 < this.map.getGrille().length && this.map.getGrille()[ligneArr + 1][colArr] < 1
-                && matriceCoup[ligneArr + 1][colArr] > id)
+        while(ligne != this.ligne && colonne != this.colonne)
         {
-            this.genererMatriceCoup(id, ligneArr + 1, colArr);
-        }
+            if ((ligneArr - 1) > 0 && this.map.getGrille()[ligneArr - 1][colArr] < 1
+                    && matriceCoup[ligneArr - 1][colArr]< coup)
+            {
+                ligne = ligne - 1;
+                coup = matriceCoup[ligne - 1][colonne];
+            }
 
-        if (colArr - 1 > 0 && this.map.getGrille()[ligneArr][colArr - 1] < 1
-                && matriceCoup[ligneArr][colArr - 1] > id)
-        {
-            this.genererMatriceCoup(id, ligneArr, colArr - 1);
-        }
+            if ((ligneArr + 1) > 0 && this.map.getGrille()[ligneArr + 1][colArr] < 1
+                    && matriceCoup[ligneArr + 1][colArr]< coup)
+            {
+                ligne = ligne - 1;
+                coup = matriceCoup[ligne + 1][colonne];
+            }
 
-        if (colArr + 1 < this.map.getGrille().length && this.map.getGrille()[ligneArr][colArr + 1] < 1
-                && matriceCoup[ligneArr][colArr + 1] > id)
-        {
-            this.genererMatriceCoup(id, ligneArr, colArr + 1);
+            if ((colArr - 1) > 0 && this.map.getGrille()[ligneArr][colArr - 1] < 1
+                    && matriceCoup[ligneArr][colArr - 1]< coup)
+            {
+                colonne = colArr - 1;
+                coup = matriceCoup[ligne][colArr];
+            }
+            if ((colArr + 1) > 0 && this.map.getGrille()[ligneArr][colArr + 1] < 1
+                    && matriceCoup[ligneArr][colArr + 1]< coup)
+            {
+                colonne = colonne + 1;
+                coup = matriceCoup[ligne][colonne + 1];
+            }
+
+            chemin.add(new int[]{ligne, colonne});
         }
+        chemin.add(new int[]{this.ligne, this.colonne});
+        return chemin;
     }
 
     public static void main(String[] argv)

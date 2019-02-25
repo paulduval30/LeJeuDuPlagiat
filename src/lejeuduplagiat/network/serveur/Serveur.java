@@ -1,6 +1,8 @@
 package lejeuduplagiat.network.serveur;
 
 import lejeuduplagiat.model.Game;
+import lejeuduplagiat.model.GameModel;
+import lejeuduplagiat.model.GameModelServer;
 
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -21,11 +23,11 @@ public class Serveur implements Runnable
 
 
 
-    public Serveur(Game gameModel)
+    public Serveur()
     {
-        nbJoueur = 0;
         Serveur.instance = this;
-        this.gameModel = gameModel;
+        this.gameModel = new GameModelServer();
+        nbJoueur = 0;
         try
         {
             this.running = false;
@@ -42,8 +44,8 @@ public class Serveur implements Runnable
     {
         try
         {
-            this.socket.bind(new InetSocketAddress(25565), 1);
-            System.out.println("En écoute sur le port 25565");
+            this.socket.bind(new InetSocketAddress(25566), 1);
+            System.out.println("En écoute sur le port 25566");
             this.running = true;
             new Thread(this).start();
         }
@@ -62,13 +64,12 @@ public class Serveur implements Runnable
             {
                 Socket clientSocket = this.socket.accept();
                 this.clients.add(new ClientSocket(clientSocket));
-                if(gameModel.getJ1() == null)
+                this.clients.get(clients.size() - 1).send("0-> Hello");
+                System.out.println(clients.size());
+                if(clients.size() == 2)
                 {
-                    System.out.println("Hello J1");
-                }
-                else
-                {
-                    System.out.println("Hello J2");
+                    this.running = false;
+                    Paquet.envoyerCurrent();
                 }
             }
             catch (Exception ex)
@@ -88,6 +89,7 @@ public class Serveur implements Runnable
 
     public void sendAll(String message)
     {
+        System.out.println(message);
         for(ClientSocket c : clients)
         {
             c.send(message);
@@ -130,6 +132,11 @@ public class Serveur implements Runnable
     public void setRunning(boolean running)
     {
         this.running = running;
+    }
+
+    public static void main(String[] argv)
+    {
+        new Serveur().listen();
     }
 }
 
